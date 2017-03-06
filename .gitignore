@@ -1,5 +1,7 @@
 .idea/
 var/
+app/config/parameters.yml
 phpunit.xml.dist
 vendor/
 tests/
+web/bower_components
