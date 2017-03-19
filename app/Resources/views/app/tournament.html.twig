@@ -7,22 +7,23 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
-                <!-- /.box-header -->
+                {{ form_start(form) }}
                 <div class="box-body">
-                    <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-                        <div class="row">
-                            <div class="col-sm-6"></div>
-                            <div class="col-sm-6"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-
-                            </div>
-                        </div>
-
-                    </div>
+                    <table class="table table-responsive tournaments" data-prototype="{{ form_widget(form.name.vars.prototype)|e('html_attr') }}">
+                        {% for name in form.name %}
+                            <tr id="{{ name.name.parent.vars.value.id }}">
+                                <td class="col-xs-10">
+                                    {{ form_widget(name.name) }}
+                                </td>
+                                <td class="col-xs-2">
+                                    <a href="#" class="btn btn-flat btn-block btn-danger remove-tournament" data-inputid="{{ name.name.parent.vars.value.id }}">
+                                        <i class="fa fa-times"></i>&nbsp;Remove</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </div>
-                <!-- /.box-body -->
+                {{ form_end(form) }}
             </div>
             <!-- /.box -->
         </div>
@@ -34,5 +35,82 @@
     <link href="{{ asset('adminLte/plugins/datatables/dataTables.bootstrap.css') }}">
 {% endblock %}
 
-{% block javascripts %}
+{% block scripts %}
+    <script>
+        var $collectionHolder;
+
+        var $addTagLink = $('<td>' +
+            '<div class="btn-group">' +
+            '<button type="submit" class="btn btn-flat btn-success">Save</button>' +
+            '<a href="#" class="add_tag_link btn btn-flat btn-primary">Add a tournament</a>' +
+            '</div>' +
+            '</td>');
+        var $newLink = $('<tr></tr>').append($addTagLink);
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('.tournaments');
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLink);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $('.add_tag_link').on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see next code block)
+                addTagForm($collectionHolder, $newLink);
+            });
+        });
+
+        function addTagForm($collectionHolder, $newLink) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '$$name$$' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            newForm = $('<td></td>').append(newForm);
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<tr></tr>').append(newForm);
+
+            // also add a remove button, just for this example
+            $newFormLi.append('<td><a class="btn btn-block btn-flat btn-danger remove-tag" href="#"">x remove</a></td>');
+
+            $newLink.before($newFormLi);
+
+            // handle the removal, just for this example
+            $('.remove-tag').click(function(e) {
+                e.preventDefault();
+
+                $(this).closest('tr').remove();
+
+                return false;
+            });
+        }
+
+        $('.remove-tournament').click(function () {
+            var tournament = $(this).data('inputid'),
+                url = '{{ path('site.tournament.remove',{'tournament': '_tournament'}) }}';
+
+                $.ajax({
+                    method: 'post',
+                    url: url.replace('_tournament', tournament),
+                    success: function () {
+                        $('#'+tournament).remove();
+                    }
+                });
+        })
+    </script>
 {% endblock %}

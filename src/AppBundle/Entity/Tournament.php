@@ -21,7 +21,7 @@ class Tournament
 
     /**
      * @var string
-     * @ORM\Column()
+     * @ORM\Column(unique=true)
      */
     private $name;
 
