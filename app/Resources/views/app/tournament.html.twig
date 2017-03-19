@@ -15,7 +15,12 @@
                                 <td class="col-xs-10">
                                     {{ form_widget(name.name) }}
                                 </td>
-                                <td class="col-xs-2">
+                                <td class="col-xs-1">
+                                    <a href="{{ path('site.tournament.details',{
+                                        'tournament': name.name.parent.vars.value.id
+                                    }) }}" class="btn btn-flat btn-success"><span class="fa fa-info"></span>&nbsp;Details</a>
+                                </td>
+                                <td class="col-xs-1">
                                     <a href="#" class="btn btn-flat btn-block btn-danger remove-tournament" data-inputid="{{ name.name.parent.vars.value.id }}">
                                         <i class="fa fa-trash"></i>&nbsp;Delete</a>
                                 </td>

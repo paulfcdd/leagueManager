@@ -73,4 +73,15 @@ class TournamentController extends Controller
 
         return JsonResponse::create();
     }
+
+    /**
+     * @Route("/tournament/details/{tournament}", name="site.tournament.details")
+     */
+    public function tournamentInfo(Tournament $tournament){
+
+        return $this->render(':app/tournament:details.html.twig', [
+            'tournament' => $tournament
+        ]);
+
+    }
 }

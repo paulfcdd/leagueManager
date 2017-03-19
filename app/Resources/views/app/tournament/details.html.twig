@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+
+{% block content_title %}{{ tournament.name }}{% endblock %}
+{% block content_subtitle %}Информация о турнире{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                {% for league in tournament.leagues %}
+                    {#{{ dump(league) }}#}
+                    {% if league is not defined %}
+                        kek
+                        {% else %}
+                        {{ dump(league) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block scripts %}{% endblock %}
