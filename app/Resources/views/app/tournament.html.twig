@@ -17,7 +17,7 @@
                                 </td>
                                 <td class="col-xs-2">
                                     <a href="#" class="btn btn-flat btn-block btn-danger remove-tournament" data-inputid="{{ name.name.parent.vars.value.id }}">
-                                        <i class="fa fa-times"></i>&nbsp;Remove</a>
+                                        <i class="fa fa-trash"></i>&nbsp;Delete</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -36,13 +36,18 @@
 {% endblock %}
 
 {% block scripts %}
+
+    <script src="{{ asset('adminLte/plugins/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('adminLte/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+
     <script>
+
         var $collectionHolder;
 
-        var $addTagLink = $('<td>' +
+        var $addTagLink = $('<td xmlns="http://www.w3.org/1999/html">' +
             '<div class="btn-group">' +
-            '<button type="submit" class="btn btn-flat btn-success">Save</button>' +
-            '<a href="#" class="add_tag_link btn btn-flat btn-primary">Add a tournament</a>' +
+            '<a href="#" class="add_tag_link btn btn-flat btn-primary"><span class="fa fa-plus"></span>&nbsp;Add a tournament</a>' +
+            '<button type="submit" class="btn btn-flat btn-success"><i class="fa fa-save"></i>&nbsp;Save</button>' +
             '</div>' +
             '</td>');
         var $newLink = $('<tr></tr>').append($addTagLink);
@@ -86,7 +91,7 @@
             var $newFormLi = $('<tr></tr>').append(newForm);
 
             // also add a remove button, just for this example
-            $newFormLi.append('<td><a class="btn btn-block btn-flat btn-danger remove-tag" href="#"">x remove</a></td>');
+            $newFormLi.append('<td><a class="btn btn-block btn-flat btn-danger remove-tag" href="#"><span class="fa fa-times"></span>&nbsp;Remove</a></td>');
 
             $newLink.before($newFormLi);
 
