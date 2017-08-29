@@ -117,8 +117,12 @@
                 $.ajax({
                     method: 'post',
                     url: url.replace('_tournament', tournament),
-                    success: function () {
+                    success: function (data) {
+                        console.log(data);
                         $('#'+tournament).remove();
+                    },
+                    error: function (resp) {
+                        alert(resp);
                     }
                 });
         })

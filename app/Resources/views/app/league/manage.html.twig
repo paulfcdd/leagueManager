@@ -1,0 +1,55 @@
+{% extends '::base.html.twig' %}
+
+
+{% if app.request.get('league') is null %}
+    {% set title  = 'New league' %}
+    {% set subtitle = 'Add league' %}
+{% else %}
+    {% set title  = league.name %}
+    {% set subtitle = 'Manage league' %}
+{% endif %}
+
+
+{% block content_title %}
+    {{ title }}
+{% endblock %}
+
+
+{% block content_subtitle %}
+    {{ subtitle }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-12">
+            <div class="box">
+                <div class="box-header">
+                    <h5>Set league name and ranking</h5>
+                </div>
+
+                {{ form_start(form) }}
+                <div class="box-body">
+
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.ranking) }}
+                        {{ form_widget(form.ranking) }}
+                    </div>
+
+                </div>
+                <div class="box-footer">
+                    {{ form_widget(form.save) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block scripts %}{% endblock %}

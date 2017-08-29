@@ -29,10 +29,16 @@ class League
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="Tournament")
+     * @ORM\ManyToOne(targetEntity="Tournament", inversedBy="leagues")
      * @ORM\JoinColumn(name="tournament", referencedColumnName="id")
      */
     private $tournament;
+
+    /**
+     * @var integer
+     * @ORM\Column(length=2)
+     */
+    private $ranking;
 
     /**
      * Get id
@@ -90,5 +96,29 @@ class League
     public function getTournament()
     {
         return $this->tournament;
+    }
+
+    /**
+     * Set ranking
+     *
+     * @param string $ranking
+     *
+     * @return League
+     */
+    public function setRanking($ranking)
+    {
+        $this->ranking = $ranking;
+
+        return $this;
+    }
+
+    /**
+     * Get ranking
+     *
+     * @return string
+     */
+    public function getRanking()
+    {
+        return $this->ranking;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\League;
 use AppBundle\Entity\Tournament;
 use AppBundle\Form\TournamentType;
 use Doctrine\DBAL\DBALException;
@@ -12,12 +13,20 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\{
+    FormInterface, Form
+};
 
+/**
+ * Class TournamentController
+ * @package AppBundle\Controller
+ * @Route("/tournament")
+ */
 class TournamentController extends Controller
 {
     /**
      * @param Request $request
-     * @Route("/tournament", name="site.tournament")
+     * @Route("", name="site.tournament")
      * @return Response
      */
     public function tournamentListAction(Request $request){
@@ -26,17 +35,8 @@ class TournamentController extends Controller
 
         $tournament = new Tournament();
 
-        $form = $this->createFormBuilder($tournament)
-            ->setAction($this->generateUrl('site.tournament', [
-                'tournament' => $tournament->getId(),
-            ]))
-            ->add('name', CollectionType::class,[
-                'label' => false,
-                'data' => $em->getRepository(Tournament::class)->findAll(),
-                'entry_type' => TournamentType::class,
-                'allow_add' => true,
-            ])
-            ->getForm()
+        $form = $this
+            ->buildTournamentForm($tournament)
             ->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -60,28 +60,55 @@ class TournamentController extends Controller
 
     /**
      * @param Tournament $tournament
-     * @param Request $request
-     * @Route("/tournament/remove/{tournament}", name="site.tournament.remove")
+     * @Route("/remove/{tournament}", name="site.tournament.remove")
      * @Method("POST")
      * @return JsonResponse
      */
-    public function removeTournamentAction(Tournament $tournament, Request $request){
-        $em = $this->getDoctrine()->getManager();
+    public function removeTournamentAction(Tournament $tournament){
 
-        $em->remove($tournament);
-        $em->flush();
-
-        return JsonResponse::create();
+        return $this
+            ->get('app.crudbale')
+            ->setData($tournament)
+            ->delete();
     }
 
     /**
-     * @Route("/tournament/details/{tournament}", name="site.tournament.details")
+     * @param Tournament $tournament
+     * @return Response
+     * @Route("/details/{tournament}", name="site.tournament.details")
      */
     public function tournamentInfo(Tournament $tournament){
 
+        $em = $this->getDoctrine()->getManager();
+
+        $leagues = $em->getRepository(League::class)->findBy(
+            ['tournament' => $tournament->getId()],
+            ['ranking' => 'ASC']);
+
         return $this->render(':app/tournament:details.html.twig', [
-            'tournament' => $tournament
+            'tournament' => $tournament,
+            'leagues' => $leagues
         ]);
+
+    }
+
+    /**
+     * @param Tournament $tournament
+     * @return Form|FormInterface
+     */
+    private function buildTournamentForm(Tournament $tournament) {
+
+        return $this->createFormBuilder($tournament)
+            ->setAction($this->generateUrl('site.tournament', [
+                'tournament' => $tournament->getId(),
+            ]))
+            ->add('name', CollectionType::class,[
+                'label' => false,
+                'data' => $this->getDoctrine()->getRepository(Tournament::class)->findAll(),
+                'entry_type' => TournamentType::class,
+                'allow_add' => true,
+            ])
+            ->getForm();
 
     }
 }

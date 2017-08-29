@@ -31,6 +31,13 @@ class Tournament
     private $leagues;
 
     /**
+     * Tournament constructor.
+     */
+    public function __construct() {
+        $this->leagues = new ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -62,13 +69,6 @@ class Tournament
     public function getName()
     {
         return $this->name;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->leagues = new ArrayCollection;
     }
 
     /**

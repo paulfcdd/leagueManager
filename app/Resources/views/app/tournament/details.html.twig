@@ -1,27 +1,92 @@
 {% extends '::base.html.twig' %}
 
 {% block content_title %}{{ tournament.name }}{% endblock %}
-{% block content_subtitle %}Информация о турнире{% endblock %}
+{% block content_subtitle %}
+    <span class="fa fa-info"></span>&nbsp;Tournament info
+{% endblock %}
+
+
+{% block stylesheets %}
+    <link href="{{ asset('adminLte/plugins/datatables/jquery.dataTables.min.css') }}" type="text/css" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-12 col-sm-6">
             <div class="box">
-                {% for league in tournament.leagues %}
-                    {#{{ dump(league) }}#}
-                    {% if league is not defined %}
-                        kek
-                        {% else %}
-                        {{ dump(league) }}
-                    {% endif %}
-                {% endfor %}
+               <div class="box-header">
+                   <h5>Leagues</h5>
+               </div>
+                <div class="box-body">
+
+                    <table id="example" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Teams</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for league in leagues %}
+                            <tr>
+                                <td>
+                                    {{ league.ranking }}
+                                </td>
+                               <td>
+                                   {{ league.name }}
+                               </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" type="button" href="{{ path('league.manage', {
+                                        'league': league.id,
+                                        'tournament': tournament.name | replace(' ', '_')
+                                    }) }}">
+                                        <span class="fa fa-edit"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="box-footer">
+                    <a class="btn btn-primary btn-flat" role="button" href="{{ path('league.manage', {
+                        'tournament': tournament.name
+                    }) }}">
+                        Add league
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h5>Clubs</h5>
+                </div>
+                <div class="box-body">body</div>
+                <div class="box-footer">
+                    <a class="btn btn-primary btn-flat" role="button">
+                        Add club
+                    </a>
+                </div>
             </div>
             <!-- /.box -->
         </div>
-        <!-- /.col -->
     </div>
 {% endblock %}
 
-{% block stylesheets %}{% endblock %}
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+    <script src="{{ asset('adminLte/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable();
+        } );
+    </script>
+{% endblock %}
